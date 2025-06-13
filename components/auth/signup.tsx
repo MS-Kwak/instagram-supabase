@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 export default function SignUp({ setView }) {
+  const [otp, setOtp] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmationRequired, setConfirmationRequired] =
@@ -34,9 +36,45 @@ export default function SignUp({ setView }) {
     },
   });
 
+  const verifyOtpMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.auth.verifyOtp({
+        type: 'signup',
+        email,
+        token: otp,
+      });
+      if (data) {
+        console.log('OTP verification successful:', data);
+      }
+
+      if (error) {
+        console.error('Signup error:', error);
+        throw new Error(error.message);
+      }
+    },
+  });
+
+  const signInWithKakao = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: {
+        redirectTo: process.env.NEXT_PUBLIC_VERCEL_URL
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`
+          : 'http://localhost:3000/auth/callback',
+      },
+    });
+    if (data) {
+      console.log('Kakao sign-in initiated:', data);
+    }
+    if (error) {
+      console.error('Kakao sign-in error:', error);
+      alert(error.message);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2 items-center justify-center h-screen">
-      <div className="flex flex-col items-center justify-center pt-10 pb-6 px-10 w-full max-w-lg border border-gray-300 bg-white">
+      <div className="flex flex-col gap-2 items-center justify-center pt-10 pb-6 px-10 w-full max-w-lg border border-gray-300 bg-white">
         <Image
           src={'/inflearngram.png'}
           width={60}
@@ -44,33 +82,67 @@ export default function SignUp({ setView }) {
           className="w-60 !h-auto mb-6"
           alt="logo"
         />
-        <Input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="email"
-          type="email"
-          className="w-full rounded-sm mb-2 border-gray-300 p-2"
-        />
-        <Input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          placeholder="password"
-          className="w-full rounded-sm mb-2 border-gray-300 p-2"
-        />
+
+        {confirmationRequired ? (
+          <Input
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            placeholder="6자리 OTP를 입력해주세요"
+            type="text"
+            className="w-full rounded-sm border-gray-300 p-2"
+          />
+        ) : (
+          <>
+            <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email"
+              type="email"
+              className="w-full rounded-sm border-gray-300 p-2"
+            />
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="password"
+              className="w-full rounded-sm border-gray-300 p-2"
+            />
+          </>
+        )}
+
         <Button
           onClick={() => {
             // Handle signup logic here
-            signupMutation.mutate();
+            if (confirmationRequired) {
+              verifyOtpMutation.mutate();
+            } else {
+              signupMutation.mutate();
+            }
           }}
-          loading={signupMutation.isPending}
-          disabled={confirmationRequired}
+          loading={
+            confirmationRequired
+              ? verifyOtpMutation.isPending
+              : signupMutation.isPending
+          }
+          disabled={
+            confirmationRequired
+              ? verifyOtpMutation.isPending
+              : signupMutation.isPending
+          }
           style={{ backgroundColor: '#1877F2', color: 'white' }}
           className=" hover:bg-[#1877F2] hover:brightness-110 w-full"
         >
-          {confirmationRequired
-            ? `메일함을 확인해주세요`
-            : `가입하기`}
+          {confirmationRequired ? `인증하기` : `가입하기`}
+        </Button>
+
+        <Button
+          onClick={() => {
+            signInWithKakao();
+          }}
+          style={{ backgroundColor: '#f2d918', color: 'black' }}
+          className=" hover:bg-[#f2d918] hover:brightness-110 w-full"
+        >
+          Kakao 로그인
         </Button>
       </div>
       <div className="py-4 w-full text-center max-w-lg text-sm border border-gray-300 bg-white">
