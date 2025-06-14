@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['[project_id].supabase.co', 'image.tmdb.org'],
   },
+  env: {
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+  },
 };
 
 export default nextConfig;

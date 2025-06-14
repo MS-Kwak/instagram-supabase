@@ -15,6 +15,8 @@ export default function SignUp({ setView }) {
   const [confirmationRequired, setConfirmationRequired] =
     useState(false);
 
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
   const supabase = createBrowserSupabaseClient();
   const signupMutation = useMutation({
     mutationFn: async () => {
@@ -22,7 +24,7 @@ export default function SignUp({ setView }) {
         email,
         password,
         options: {
-          emailRedirectTo: `http://localhost:3000/signup/confirm`,
+          emailRedirectTo: `${BASE_URL}/signup/confirm`,
         },
       });
       if (data) {

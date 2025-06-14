@@ -12,13 +12,15 @@ export default function SignIn({ setView }) {
   const [password, setPassword] = useState('');
   const supabase = createBrowserSupabaseClient();
 
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
   const signInWithKakao = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
         redirectTo: process.env.NEXT_PUBLIC_VERCEL_URL
           ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`
-          : 'http://localhost:3000/auth/callback',
+          : `${BASE_URL}/auth/callback`,
       },
     });
     if (data) {
