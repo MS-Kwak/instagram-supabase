@@ -1,10 +1,31 @@
-import Sidebar from './sidebar';
+'use client';
 
-export default async function MainLayout({ children }) {
+import Sidebar from './sidebar';
+import { createContext, useState } from 'react';
+
+export const selectedUserIdContext = createContext(null);
+export const selectedUserIndexContext = createContext(null);
+export const presenceStateContext = createContext(null);
+
+export default function MainLayout({ children }) {
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedUserIndex, setSelectedUserIndex] = useState(0);
+  const [presence, setPresence] = useState({});
+
   return (
-    <main className="flex h-screen items-center justify-center">
-      <Sidebar />
-      {children}
-    </main>
+    <presenceStateContext.Provider value={{ presence, setPresence }}>
+      <selectedUserIndexContext.Provider
+        value={{ selectedUserIndex, setSelectedUserIndex }}
+      >
+        <selectedUserIdContext.Provider
+          value={{ selectedUserId, setSelectedUserId }}
+        >
+          <main className="flex h-screen items-center justify-center">
+            <Sidebar />
+            {children}
+          </main>
+        </selectedUserIdContext.Provider>
+      </selectedUserIndexContext.Provider>
+    </presenceStateContext.Provider>
   );
 }
