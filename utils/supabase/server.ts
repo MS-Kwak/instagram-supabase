@@ -11,6 +11,8 @@ export const createServerSupabaseClient = async (
   cookieStore: ReturnType<typeof cookies> = cookies(),
   admin: boolean = false
 ) => {
+  const store = await cookieStore; // await로 비동기 처리
+
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     admin
@@ -19,11 +21,11 @@ export const createServerSupabaseClient = async (
     {
       cookies: {
         get(name: string) {
-          return cookieStore.get(name)?.value;
+          return store.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value, ...options });
+            store.set({ name, value, ...options });
           } catch (error) {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
@@ -32,7 +34,7 @@ export const createServerSupabaseClient = async (
         },
         remove(name: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value: '', ...options });
+            store.set({ name, value: '', ...options });
           } catch (error) {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
@@ -47,5 +49,6 @@ export const createServerSupabaseClient = async (
 export const createServerSupabaseAdminClient = async (
   cookieStore: ReturnType<typeof cookies> = cookies()
 ) => {
+  // const store = await cookieStore; // await로 비동기 처리
   return createServerSupabaseClient(cookieStore, true);
 };
