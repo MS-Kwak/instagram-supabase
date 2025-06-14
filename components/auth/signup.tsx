@@ -62,7 +62,7 @@ export default function SignUp({ setView }) {
       options: {
         redirectTo: process.env.NEXT_PUBLIC_VERCEL_URL
           ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`
-          : 'http://localhost:3000/auth/callback',
+          : `${BASE_URL}/auth/callback`,
       },
     });
     if (data) {
