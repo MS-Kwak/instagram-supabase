@@ -91,11 +91,11 @@ export default function ChatScreen() {
       </div>
 
       {/* 채팅input 영역 */}
-      <div className="flex">
+      <div className="flex relative">
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="p-3 w-full border-2 border-blue-500"
+          className="p-3 w-full border-2 border-blue-500 pr-10 outline-0" // padding-right 조정
           type="text"
           placeholder="메시지를 입력해주세요"
         />
@@ -106,7 +106,7 @@ export default function ChatScreen() {
             }
           }}
           style={{ backgroundColor: '#1877F2', color: 'white' }}
-          className=" hover:bg-[#1877F2] hover:brightness-110 rounded-md"
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 hover:bg-[#1877F2] hover:brightness-110 !rounded-none"
           loading={sendMessageMutation.isPending}
           title="전송"
         >

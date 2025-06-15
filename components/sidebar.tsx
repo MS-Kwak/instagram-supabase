@@ -30,7 +30,7 @@ export default function Sidebar() {
         <Link href="/discover">
           <Search className="text-2xl" />
         </Link>
-        <Link href="/chat">
+        <Link href="/chat" className="text-cyan-600">
           <Send className="text-2xl" />
         </Link>
       </div>
@@ -38,7 +38,7 @@ export default function Sidebar() {
       {/* logout버튼 */}
       <div>
         <button onClick={onClickSignOut}>
-          <Logout className="text-2xl text-purple-500" />
+          <Logout className="text-2xl text-teal-600" />
         </button>
       </div>
     </aside>
