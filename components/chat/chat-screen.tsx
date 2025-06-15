@@ -16,7 +16,6 @@ import {
   sendMessage,
 } from '@/actions/chat.action';
 import { createBrowserSupabaseClient } from '@/utils/supabase/client';
-import PageLoader from 'next/dist/client/page-loader';
 
 export default function ChatScreen() {
   const { selectedUserId } = useContext(selectedUserIdContext);

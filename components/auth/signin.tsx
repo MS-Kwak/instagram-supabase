@@ -41,6 +41,7 @@ export default function SignIn({ setView }) {
 
       if (data) {
         console.log(data);
+        // 어차피 화면이 넘어갈꺼기 때문에 어떤 처리를 해줄 필요가 없어요!!
       }
 
       if (error) {
